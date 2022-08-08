@@ -11,9 +11,14 @@ export class SpaceStack extends Stack {
 
   private api = new RestApi(this, 'SpaceApi');
   private spacesTable = new GenericTable(
-    'SpacesTable',
-    'spaceId',
-    this
+    this,
+    {
+      tableName: 'SpacesTable',
+      primaryKey: 'spaceId',
+      createLambdaPath: 'Create',
+      readLambdaPath: 'Read',
+      secondaryIndexes: ['LOCATIONS']
+    }
   );
 
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -25,6 +30,7 @@ export class SpaceStack extends Stack {
         handler: 'hello.handler'
       });
 
+      // Hello Lambda integration
       const helloLambdaNodeJs = new NodejsFunction(this, 'HelloLambdaNodejsFunction', {
         entry: (join(__dirname, '..', 'services', 'node-lambda', 'hello.ts')),
         handler: 'handler'
@@ -38,5 +44,11 @@ export class SpaceStack extends Stack {
       const helloLambdaIntegration = new LambdaIntegration(helloLambda);
       const helloLambdaResource = this.api.root.addResource('hello');
       helloLambdaResource.addMethod('GET', helloLambdaIntegration);
+
+
+      // Spaces API integrations:
+      const spacesResource = this.api.root.addResource('spaces');
+      spacesResource.addMethod('POST', this.spacesTable.createLambdaIntegration);
+      spacesResource.addMethod('GET', this.spacesTable.readLambdaIntegration);
   }
 }

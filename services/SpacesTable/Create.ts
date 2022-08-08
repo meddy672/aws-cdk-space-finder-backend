@@ -5,12 +5,13 @@ import { v4 } from 'uuid';
 
 const dbClient = new DynamoDB.DocumentClient();
 
+const TABLE_NAME = process.env.TABLE_NAME;
 
 async function handler(event:APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> {
     console.log('Event:',JSON.stringify(event, null, 2));
     const result: APIGatewayProxyResult = {
         statusCode: 200,
-        body: 'Hello from the Lambda!'
+        body: 'Created item with id:'+v4()
     };
 
     const item = typeof event.body === 'object' ? event.body : JSON.parse(event.body)
@@ -19,7 +20,7 @@ async function handler(event:APIGatewayProxyEvent, context: Context): Promise<AP
 
     try {
         await dbClient.put({
-            TableName: 'SpacesTable',
+            TableName: TABLE_NAME!,
             Item: item
         }).promise();
     } catch (err) {
