@@ -61,7 +61,7 @@ export class GenericTable {
                         name: secondaryIndex,
                         type: AttributeType.STRING
                     }
-                })
+                });
             }
         }
     }

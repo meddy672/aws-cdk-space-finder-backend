@@ -14,30 +14,19 @@ async function handler(event:APIGatewayProxyEvent, context: Context): Promise<AP
         body: 'Created item with id:'
     };
 
-    const requestBody = typeof event.body === 'object' ? event.body : JSON.parse(event.body);
     const spaceId = event.queryStringParameters?.[PRIMARY_KEY!];
 
     try {
-        if (requestBody && spaceId) {
-            const requestBodyKey = Object.keys(requestBody)[0];
-            const requestBodyValue = requestBody[requestBodyKey];
-    
-            const updateResult = await dbClient.update({
+        if (spaceId) {
+
+            const deleteResult = await dbClient.delete({
                 TableName: TABLE_NAME!,
                 Key: {
                     [PRIMARY_KEY!]: spaceId
-                },
-                UpdateExpression: 'set #zzzNew = :new',
-                ExpressionAttributeValues: {
-                    ':new': requestBodyValue
-                },
-                ExpressionAttributeNames: {
-                    '#zzzNew': requestBodyKey
-                },
-                ReturnValues: 'UPDATED_NEW'
+                }
             }).promise();
-    
-            result.body = JSON.stringify(updateResult);
+
+            result.body = JSON.stringify(deleteResult);
         }
     } catch (err) {
         console.error(err);
