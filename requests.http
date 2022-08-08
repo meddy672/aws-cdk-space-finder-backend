@@ -1,9 +1,13 @@
-@endpoint = https://lz3nj16st2.execute-api.us-east-1.amazonaws.com/prod/
+@endpoint = https://kdspwuf7yj.execute-api.us-east-1.amazonaws.com/prod/
 
 GET {{endpoint}}/hello/
 ###
 
-GET {{endpoint}}/spaces?spaceId=70df170d-3ccc-4d21-87e2-e36c7748934f
+
+GET {{endpoint}}/spaces
+###
+
+GET {{endpoint}}/spaces?spaceId=0ad886e9-17d9-4d55-8af2-d2766317e610
 ###
 
 POST {{endpoint}}/spaces/
