@@ -1,5 +1,6 @@
 import { DynamoDB } from 'aws-sdk';
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
+import { getEventBody } from '../Shared/Utils';
 
 
 const dbClient = new DynamoDB.DocumentClient();
@@ -14,7 +15,7 @@ async function handler(event:APIGatewayProxyEvent, context: Context): Promise<AP
         body: 'Created item with id:'
     };
 
-    const requestBody = typeof event.body === 'object' ? event.body : JSON.parse(event.body);
+    const requestBody = getEventBody(event);
     const spaceId = event.queryStringParameters?.[PRIMARY_KEY!];
 
     try {
