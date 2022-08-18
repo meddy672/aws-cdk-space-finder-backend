@@ -1,7 +1,7 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { join } from 'path';
-import { LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway';
+import { LambdaIntegration, RestApi, MethodOptions, AuthorizationType } from 'aws-cdk-lib/aws-apigateway';
 import { GenericTable } from './Databases'
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
@@ -41,9 +41,16 @@ export class SpaceStack extends Stack {
       s3ListPolicy.addResources('*');
       helloLambdaNodeJs.addToRolePolicy(s3ListPolicy);
 
+      const optionsWithAuthorizer: MethodOptions = {
+        authorizationType: AuthorizationType.COGNITO,
+        authorizer: {
+          authorizerId: this.authorizer.authorizer.authorizerId
+        }
+      }
+
       const helloLambdaIntegration = new LambdaIntegration(helloLambdaNodeJs);
       const helloLambdaResource = this.api.root.addResource('hello');
-      helloLambdaResource.addMethod('GET', helloLambdaIntegration);
+      helloLambdaResource.addMethod('GET', helloLambdaIntegration), optionsWithAuthorizer;
 
 
       // Spaces API integrations:
