@@ -1,4 +1,4 @@
-import { CfnOutput } from 'aws-cdk-lib';
+import { CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
 import { CognitoUserPoolsAuthorizer, RestApi } from 'aws-cdk-lib/aws-apigateway';
 import { UserPool, UserPoolClient, CfnUserPoolGroup } from 'aws-cdk-lib/aws-cognito';
 import { Construct } from 'constructs';
@@ -33,6 +33,7 @@ export class AuthorizerWrapper {
         this.userPool = new UserPool(this.scope, 'SpaceUserPool',  {
             userPoolName: 'SpaceUserPool',
             selfSignUpEnabled: true,
+            removalPolicy: RemovalPolicy.DESTROY,
             signInAliases: {
                 username: true,
                 email: true
